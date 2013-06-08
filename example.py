@@ -1,4 +1,4 @@
-#    BLP-Python provides an implementation of random coefficient logit model of 
+#    BLP-Python provides an implementation of random coefficient logit model of
 #    Berry, Levinsohn and Pakes (1995)
 #    Copyright (C) 2011, 2013 Joon H. Ro
 #
@@ -64,21 +64,21 @@ if __name__ == '__main__':
 
     data.Z = c_[data.Z_org[:, 1:], data.x1[:, 1:]]
 
-    data.nsimind = 20 # number of simulated "indviduals" per market
-    data.nmkt = 94 # number of markets = (# of cities)*(# of quarters)
-    data.nbrand = 24 # number of brands per market. if the numebr differs by market this requires some "accounting" vector
+    data.nsimind = 20  # number of simulated "indviduals" per market
+    data.nmkt = 94  # number of markets = (# of cities)*(# of quarters)
+    data.nbrand = 24  # number of brands per market. if the numebr differs by market this requires some "accounting" vector
 
     # the difference is, each v will correspond to each x2, while
     # all 4 Z's will be used for each x2
 
-    theta = array([[0.3772,   3.0888 ,        0 ,   1.1859  ,       0],
-                   [1.8480 , 16.5980  ,  -.6590 ,        0  , 11.6245],
-                  [-0.0035 , -0.1925  ,       0 ,   0.0296  ,       0],
-                   [0.0810 ,  1.4684  ,       0 ,  -1.5143  ,       0]])
+    theta = array([[0.3772,  3.0888,      0,  1.1859,       0],
+                   [1.8480, 16.5980, -.6590,       0, 11.6245],
+                  [-0.0035, -0.1925,      0,  0.0296,       0],
+                   [0.0810,  1.4684,      0, -1.5143,       0]])
 
     BLP = blp.BLP(data)
     # BLP.init_GMM(theta, cython=True)
     BLP.init_GMM(theta, cython=False)
     BLP.GMM(theta)
-    
+
     BLP.optimize(theta, algorithm='simplex')
