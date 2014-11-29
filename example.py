@@ -1,4 +1,4 @@
-#    BLP-Python provides an implementation of random coefficient logit model of 
+#    BLP-Python provides an implementation of random coefficient logit model of
 #    Berry, Levinsohn and Pakes (1995)
 #    Copyright (C) 2011, 2013 Joon H. Ro
 #
@@ -19,24 +19,7 @@
 
 from __future__ import division
 
-# Standard libraries
-import os
-import sys
-import re
-import time
-
-import cPickle
-from collections import defaultdict
-
-# Scientific libraries
-from numpy import *
-from numpy.linalg import solve, inv, cholesky
-from scipy.linalg import cho_solve
-
-#seterr(all = 'ignore')
-#set_printoptions(precision = 10, suppress='None')
-
-# Custom libraries
+import numpy as np
 import blp
 
 
@@ -51,12 +34,12 @@ if __name__ == '__main__':
 
     data = Empty()
 
-    data.x1 = array(matlab_ps2['x1'].todense())
-    data.x2 = array(matlab_ps2['x2'].copy())
+    data.x1 = np.array(matlab_ps2['x1'].todense())
+    data.x2 = np.array(matlab_ps2['x2'].copy())
     data.id_demo = matlab_ps2['id_demo'].reshape(-1, )
-    data.D = array(matlab_ps2['demogr'])
+    data.D = np.array(matlab_ps2['demogr'])
     data.id = matlab_ps2['id'].reshape(-1, )
-    data.v = array(matlab_ps2['v'])
+    data.v = np.array(matlab_ps2['v'])
     data.s_jt = matlab_ps2['s_jt'].reshape(-1, )
     data.ans = matlab_ps2['ans'].reshape(-1, )
 
@@ -64,21 +47,21 @@ if __name__ == '__main__':
 
     data.Z = c_[data.Z_org[:, 1:], data.x1[:, 1:]]
 
-    data.nsimind = 20 # number of simulated "indviduals" per market
-    data.nmkt = 94 # number of markets = (# of cities)*(# of quarters)
-    data.nbrand = 24 # number of brands per market. if the numebr differs by market this requires some "accounting" vector
+    data.nsimind = 20  # number of simulated "indviduals" per market
+    data.nmkt = 94  # number of markets = (# of cities)*(# of quarters)
+    data.nbrand = 24  # number of brands per market. if the numebr differs by market this requires some "accounting" vector
 
     # the difference is, each v will correspond to each x2, while
     # all 4 Z's will be used for each x2
 
-    theta = array([[0.3772,   3.0888 ,        0 ,   1.1859  ,       0],
-                   [1.8480 , 16.5980  ,  -.6590 ,        0  , 11.6245],
-                  [-0.0035 , -0.1925  ,       0 ,   0.0296  ,       0],
-                   [0.0810 ,  1.4684  ,       0 ,  -1.5143  ,       0]])
+    theta = np.array([[ 0.3772,  3.0888,      0,  1.1859,       0],
+                      [ 1.8480, 16.5980, -.6590,       0, 11.6245],
+                      [-0.0035, -0.1925,      0,  0.0296,       0],
+                      [ 0.0810,  1.4684,      0, -1.5143,       0]])
 
     BLP = blp.BLP(data)
     # BLP.init_GMM(theta, cython=True)
     BLP.init_GMM(theta, cython=False)
     BLP.GMM(theta)
-    
+
     BLP.optimize(theta, algorithm='simplex')
