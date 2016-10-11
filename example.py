@@ -17,10 +17,8 @@
 #    You should have received a copy of the GNU General Public License
 #    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import division
-
 import numpy as np
-import blp
+import pyBLP
 
 
 class Empty:
@@ -30,7 +28,7 @@ class Empty:
 if __name__ == '__main__':
     import scipy.io
 
-    matlab_ps2 = scipy.io.loadmat('ps2.mat')
+    matlab_ps2 = scipy.io.loadmat('example/ps2.mat')
 
     data = Empty()
 
@@ -43,12 +41,12 @@ if __name__ == '__main__':
     data.s_jt = matlab_ps2['s_jt'].reshape(-1, )
     data.ans = matlab_ps2['ans'].reshape(-1, )
 
-    data.Z_org = scipy.io.loadmat('iv.mat')['iv']
+    data.Z_org = scipy.io.loadmat('example/iv.mat')['iv']
 
-    data.Z = c_[data.Z_org[:, 1:], data.x1[:, 1:]]
+    data.Z = np.c_[data.Z_org[:, 1:], data.x1[:, 1:]]
 
     data.nsimind = 20  # number of simulated "indviduals" per market
-    data.nmkt = 94  # number of markets = (# of cities)*(# of quarters)
+    data.nmkt = 94  # number of markets = (# of cities) * (# of quarters)
     data.nbrand = 24  # number of brands per market. if the numebr differs by market this requires some "accounting" vector
 
     # the difference is, each v will correspond to each x2, while
@@ -59,9 +57,9 @@ if __name__ == '__main__':
                       [-0.0035, -0.1925,      0,  0.0296,       0],
                       [ 0.0810,  1.4684,      0, -1.5143,       0]])
 
-    BLP = blp.BLP(data)
+    BLP = pyBLP.BLP(data)
     # BLP.init_GMM(theta, cython=True)
     BLP.init_GMM(theta, cython=False)
-    BLP.GMM(theta)
+    BLP.GMM(theta)  # should be GMM value: 14.9007894138457
 
     BLP.optimize(theta, algorithm='simplex')
